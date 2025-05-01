@@ -1,0 +1,41 @@
+<!--{% extends "base.html" %}-->
+
+{% block content %}
+<link rel="stylesheet" href="/static/home.css">
+
+<div class="container">
+    <div class="left-section">
+        <h1>Your smile, our passion</h1>
+        <p>Dedicated to providing exceptional dental care for our patients in a comfortable and friendly environment.</p>
+        <!-- <a href="#about" class="learn-more">Learn More</a> -->
+    </div>
+    <div class="login-form">
+        <h2>Login / Register</h2>
+
+        {% if msg %}
+            <div class="error-message">{{ msg }}</div>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Email</label>
+                <input type="text" id="username" name="name" value="a@a.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" value="123456" required>
+            </div>
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox">
+                    <span>Remember me</span>
+                </label>
+                <!-- <a href="#" class="forgot-password">Forgot password?</a> -->
+            </div>
+            <button type="submit" class="login-button">Log In</button>
+            <p class="register-text">Don't have an account? Please contact at 123-456-7890 to register</a></p>
+            <!-- <p class="register-text">Don't have an account? <a href="/users/manage?pkval=new">Register</a></p> -->
+        </form>
+    </div>
+</div>
+{% endblock %}
