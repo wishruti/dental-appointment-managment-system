@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- External Stylesheets -->
+<link rel="stylesheet" href="{{ url_for('static', filename='doctor_main.css') }}">
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Hi, Dr. {{ me.Full_name }}</h2>
+        <nav>
+            <a href="/doctor_main" class="active">Home</a>
+            <a href="/procedures/manage">Procedures</a>
+            <a href="/schedules/list">Schedule</a>
+            <a href="/procedure_status/manage">Procedure Status</a>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main Dashboard -->
+    <main class="dashboard-main">
+        <h1 class="page-title">Doctor Dashboard</h1>
+
+        <div class="card-row">
+            <div class="card">
+                <p class="card-label">Total Doctors</p>
+                <h2 class="card-value">{{ total_doctors }}</h2>
+            </div>
+            <div class="card">
+                <p class="card-label">Total Patients</p>
+                <h2 class="card-value">{{ total_patients }}</h2>
+            </div>
+            <div class="card">
+                <p class="card-label">Appointments</p>
+                <h2 class="card-value">{{ appointments_this_week }}</h2>
+                <small>This Week</small>
+            </div>
+        </div>
+
+        <div class="procedure-stats">
+            <h2 class="section-title">Most Used Procedures</h2>
+            <table class="procedure-table">
+                <thead>
+                    <tr>
+                        <th>Procedure</th>
+                        <th>Code</th>
+                        <th>Times Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for proc in top_procedures %}
+                    <tr>
+                        <td>{{ proc.PName }}</td>
+                        <td>{{ proc.PCode }}</td>
+                        <td>{{ proc.TimesUsed }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+{% endblock %}
