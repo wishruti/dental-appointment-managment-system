@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Available Schedules</h2>
+    <ul>
+        {% for sched in objs.data %}
+            <li>
+                Doctor ID: {{ sched.DoctorID }} | {{ sched.DayOfWeek }} from {{ sched.StartTime }} to {{ sched.EndTime }} at {{ sched.Location }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
