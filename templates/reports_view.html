@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-main" style="display: flex;">
+
+    <!-- Sidebar (Completed Visits List) -->
+    <div style="width: 280px; padding: 20px; background-color: #f8f9fa; border-radius: 12px; margin-right: 30px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+        <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #333;">Completed Visits</h2>
+
+        {% for booked_date, data in grouped_reports.items() %}
+            <div style="margin-bottom: 15px;">
+                <a href="#{{ booked_date|replace(' ', '')|replace(':', '')|replace('-', '') }}"
+                   style="display: block; padding: 12px 15px; background-color: #e7ecf3; color: #1a1a1a; border-radius: 8px; text-decoration: none; font-weight: 500; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    {{ booked_date }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Main Content -->
+    <div style="flex-grow: 1;">
+
+        <!-- <div style="margin-bottom: 25px;">
+            <a href="/patient_main" style="text-decoration: none; background: #d3d3d3; padding: 10px 22px; border-radius: 8px; font-weight: bold; color: black; font-size: 16px;">
+                ← Back
+            </a>
+        </div> -->
+
+        <h1 style="font-size: 32px; font-weight: bold; margin-bottom: 30px; color: #222;">Your Completed Procedures</h1>
+
+        {% if grouped_reports %}
+            {% for booked_date, data in grouped_reports.items() %}
+                <div id="{{ booked_date|replace(' ', '')|replace(':', '')|replace('-', '') }}"
+                     style="background: #ffffff; padding: 35px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 50px;">
+
+                    <h2 style="font-size: 24px; font-weight: 700; margin-bottom: 25px; color: #1a237e;">Visit Details</h2>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 25px;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <strong>Booked Date:</strong><br>{{ booked_date }}
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <strong>Completed Date:</strong><br>{{ data.CompletedDate }}
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <strong>Patient Name:</strong><br>{{ data.PatientName }}
+                        </div>
+                        <div style="flex: 1; min-width: 250px;">
+                            <strong>Doctor Name:</strong><br>{{ data.DoctorName }}
+                        </div>
+                    </div>
+
+                    <hr style="margin: 25px 0;">
+
+                    <h3 style="font-size: 20px; font-weight: 600; margin-bottom: 15px; color: #333;">Procedures:</h3>
+
+                    {% for proc in data.Procedures %}
+                    <div style="margin-bottom: 20px; padding: 15px; background-color: #f6f8fc; border-radius: 10px;">
+                        <p style="margin-bottom: 8px;"><strong>{{ loop.index }}. Procedure:</strong> {{ proc.ProcedureName }}</p>
+                        <p style="margin-bottom: 8px;"><strong>Cost:</strong> ${{ "%.2f"|format(proc.Cost) }}</p>
+                        <p style="margin-bottom: 0;"><strong>Notes:</strong> {{ proc.Notes }}</p>
+                    </div>
+                    {% endfor %}
+
+                    <div style="text-align: right; font-weight: bold; font-size: 22px; margin-top: 30px; color: #0d47a1;">
+                        Total Visit Cost = ${{ "%.2f"|format(data.TotalCost) }}
+                    </div>
+
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No completed procedures found.</p>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}
