@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='form.css') }}">
+
+<div class="form-wrapper">
+  <h2>{{ 'Edit' if obj.data[0].UserID else 'Add' }} User</h2>
+
+  {% if obj.errors|length > 0 %}
+    <div class="error-box">
+      {% for error in obj.errors %}
+        <div>{{ error }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form action="/users/manage?pkval={{ obj.data[0].UserID }}&action=update" method="POST" class="form-card">
+
+    <label for="Full_name">Full Name:</label>
+    <input type="text" id="Full_name" name="Full_name" value="{{ obj.data[0].Full_name }}" required>
+
+    <label for="Phone_No">Phone:</label>
+    <input type="text" id="Phone_No" name="Phone_No" value="{{ obj.data[0].Phone_No }}" required>
+
+    <label for="Email">Email:</label>
+    <input type="email" id="Email" name="Email" value="{{ obj.data[0].Email }}" required>
+
+    <label for="Password">Password:</label>
+    <input type="password" id="Password" name="Password" placeholder="Enter new password">
+
+    <label for="password2">Retype Password:</label>
+    <input type="password" id="password2" name="password2" placeholder="Retype new password">
+
+    <label for="UserRole">Role:</label>
+    <select id="UserRole" name="UserRole">
+      {% for role in obj.roles %}
+        <option value="{{ role.value }}"
+          {% if obj.data[0].UserRole == role.value %}selected{% endif %}>
+          {{ role.text }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <div class="form-actions">
+      <input type="submit" value="Update User" class="btn-primary">
+      <a href="/users/manage?pkval={{ obj.data[0].UserID }}&action=delete" class="btn-danger">Delete</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
