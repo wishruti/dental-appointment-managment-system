@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='schedules.css') }}">
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <h2>Hi, {{ me.Full_name }}</h2>
+        <nav>
+          {% if me.UserRole == 'admin' %}
+            <a href="/main" class="{% if request.path == '/main' %}active{% endif %}">Home</a>
+            <a href="/users/manage" class="{% if 'users' in request.path %}active{% endif %}">Users</a>
+            <a href="/procedures/manage" class="{% if 'procedures' in request.path %}active{% endif %}">Procedures</a>
+            <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">Schedule</a>
+            <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">Procedure Status</a>
+          
+          {% elif me.UserRole == 'doctor' %}
+            <a href="/procedures/manage" class="{% if 'procedures' in request.path %}active{% endif %}">Procedures</a>
+            <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">Schedule</a>
+            <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">Procedure Status</a>
+          
+          {% elif me.UserRole == 'patient' %}
+            <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">View Reports</a>
+            <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">My Schedule</a>
+          {% endif %}
+        </nav>
+      </div>
+
+      <div class="sidebar-bottom">
+        <a href="/logout" class="logout-btn">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+
+        <h2 class="form-title">{% if obj.data|length > 0 %}Edit{% else %}Create{% endif %} Schedule</h2>
+
+        {% if obj.errors %}
+        <div class="error-box">
+            {% for error in obj.errors %}
+                <div class="error-item">{{ error }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/schedules/manage?pkval={{ obj.data[0].SID if obj.data|length > 0 else 'new' }}&action={{ 'update' if obj.data|length > 0 else 'insert' }}" class="form-card">
+
+            {% if obj.data|length > 0 %}
+            <div class="form-group readonly">
+                <label>Schedule ID (SID):</label>
+                <span>{{ obj.data[0].SID }}</span>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="DoctorID">Doctor:</label>
+                <select name="DoctorID" id="DoctorID" required>
+                    {% for d in doctors.data %}
+                    <option value="{{ d.UserID }}"
+                        {% if obj.data|length > 0 and obj.data[0].DoctorID == d.UserID %}selected{% endif %}>
+                        {{ d.Full_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="PatientID">Patient:</label>
+                <select name="PatientID" id="PatientID" required>
+                    {% for p in patients.data %}
+                    <option value="{{ p.UserID }}"
+                        {% if obj.data|length > 0 and obj.data[0].PatientID == p.UserID %}selected{% endif %}>
+                        {{ p.Full_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Start">Start Time:</label>
+                <input type="datetime-local" name="Start" id="Start"
+                    value="{{ obj.data[0].Start|replace(' ', 'T') if obj.data|length > 0 else '' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="HourBlocks">Duration (Hours):</label>
+                <input type="number" name="HourBlocks" id="HourBlocks" min="1"
+                    value="{{ obj.data[0].HourBlocks if obj.data|length > 0 else '1' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Status">Status:</label>
+                <select name="Status" id="Status" required>
+                    {% for status in ['Open', 'Booked', 'Completed'] %}
+                    <option value="{{ status }}"
+                        {% if (obj.data|length > 0 and obj.data[0].Status == status) 
+                             or (obj.data|length == 0 and status == 'Open') %}selected{% endif %}>
+                        {{ status }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Notes">Notes:</label>
+                <textarea name="Notes" id="Notes" rows="4">{{ obj.data[0].Notes if obj.data|length > 0 else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="submit-button">
+            </div>
+
+            {% if obj.data|length > 0 %}
+            <div class="form-group">
+                <a href="/schedules/delete?pkval={{ obj.data[0].SID }}" class="submit-button" style="background-color: #e53935;" onclick="return confirm('Are you sure you want to delete this schedule?');">Delete</a>
+            </div>
+            {% endif %}
+
+
+        </form>
+
+    </main>
+</div>
+
+
+{% endblock %}
