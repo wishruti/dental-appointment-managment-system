@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="status-container">
+    <div class="schedules-list">
+        <h3>Scheduled Procedures</h3>
+        <ul class="schedule-items">
+            {% for s in schedule_list %}
+                <li class="schedule-item {% if s.SID == active_sid %}active{% endif %}">
+                    <a href="/procedure_status/manage?pkval={{ s.SID }}">
+                        {{ s.PatientName }} – {{ s.Notes }}<br>
+                        {{ s.ScheduleDate }} {{ s.ScheduleTime }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Right: Procedure Update Form -->
+    <div class="status-details">
+        <form id="procedureForm" action="/procedure_status/manage?pkval={{ obj.data[0].SID }}" method="POST" onsubmit="return validateForm();">
+            <div class="patient-info">
+                <h3>{{ obj.data[0].PatientName }}</h3>
+                <div class="appointment-time">
+                    {{ obj.data[0].ScheduleDate }} {{ obj.data[0].ScheduleTime }}
+                </div>
+                <div class="patient-details">
+                    <div class="info-item">
+                        <strong>Patient Name:</strong> {{ obj.data[0].PatientName }} (ID: {{ obj.data[0].PatientID }})
+                    </div>
+                    <div class="info-item">
+                        <strong>Doctor's Name:</strong> {{ obj.data[0].DoctorName }} (ID: {{ obj.data[0].DoctorID }})
+                    </div>
+                    <div class="info-item">
+                        <strong>Schedule ID:</strong> {{ obj.data[0].SID }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="procedures-checklist">
+                <h4>Procedures</h4>
+                {% for proc in procedures %}
+                    <div class="procedure-item">
+                        <div class="procedure-left">
+                            <input type="checkbox" name="ProcedureList" value="{{ proc.P_id }}"
+                                {% if proc.P_id in selected_procedures %}checked{% endif %}
+                                {% if is_locked_for_doctor %}disabled{% endif %}>
+                            <label>{{ proc.PName }}</label>
+                        </div>
+                        <div class="procedure-right">
+                            <input type="text" 
+                                   name="ProcedureNote_{{ proc.P_id }}" 
+                                   class="procedure-note-input"
+                                   placeholder="Add note..."
+                                   {% if is_locked_for_doctor %}disabled{% endif %}>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="status-update">
+                <h4>Status</h4>
+                <select name="Status" class="status-select" {% if is_locked_for_doctor %}disabled{% endif %}>
+                    {% for s in ['Open', 'Booked', 'Completed'] %}
+                        <option value="{{ s }}" {% if s == obj.data[0].Status %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="save-btn" {% if is_locked_for_doctor %}disabled{% endif %}>Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function validateForm() {
+    const checkboxes = document.querySelectorAll('input[name="ProcedureList"]:checked');
+    if (checkboxes.length === 0) {
+        alert("You must select at least one procedure.");
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
