@@ -1,0 +1,92 @@
+.form-wrapper {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1a237e;
+  border-bottom: 2px solid #1cc29f;
+  padding-bottom: 6px;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+  color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+  height: 100px;
+}
+
+/* Use for single primary button like Submit */
+.submit-btn,
+.btn-primary {
+  background-color: #1cc29f;
+  color: white;
+  padding: 10px 20px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.submit-btn:hover,
+.btn-primary:hover {
+  background-color: #15aa8a;
+}
+
+/* Delete button style */
+.btn-danger {
+  color: red;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Align update/delete in one row */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Use for detailed field error box (same tone as .error_text but structured) */
+.error-box {
+  background: #ffe6e6;
+  border: 1px solid #e74c3c;
+  padding: 12px;
+  margin-bottom: 20px;
+  color: #c0392b;
+  border-radius: 6px;
+}
+
+/* Existing support */
+.error_text {
+  color: red;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
