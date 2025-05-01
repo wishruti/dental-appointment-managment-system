@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='schedules.css') }}">
+
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <h2>Hi, {{ me.Full_name }}</h2>
+      <nav>
+        {% if me.UserRole == 'admin' %}
+          <a href="/main" class="{% if request.path == '/main' %}active{% endif %}">Home</a>
+          <a href="/users/manage" class="{% if 'users' in request.path %}active{% endif %}">Users</a>
+          <a href="/procedures/manage" class="{% if 'procedures' in request.path %}active{% endif %}">Procedures</a>
+          <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">Schedule</a>
+          <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">Procedure Status</a>
+
+        {% elif me.UserRole == 'doctor' %}
+          <a href="/procedures/manage" class="{% if 'procedures' in request.path %}active{% endif %}">Procedures</a>
+          <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">Schedule</a>
+          <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">Procedure Status</a>
+
+        {% elif me.UserRole == 'patient' %}
+          <a href="/procedure_status/manage" class="{% if 'procedure_status' in request.path %}active{% endif %}">View Reports</a>
+          <a href="/schedules/list" class="{% if 'schedules' in request.path %}active{% endif %}">My Schedule</a>
+        {% endif %}
+      </nav>
+    </div>
+
+    <div class="sidebar-bottom">
+      <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+  </aside>
+
+  <main class="dashboard-main">
+
+    <div class="schedule-header">
+      <h2 class="month-selector">{{ month }}/{{ year }}</h2>
+      <div>
+        <a href="/schedules/list?month={{ (month-1) if month>1 else 12 }}&year={{ year-1 if month==1 else year }}" class="create-btn">« Prev</a>
+        <a href="/schedules/list?month={{ (month+1) if month<12 else 1 }}&year={{ year+1 if month==12 else year }}" class="create-btn">Next »</a>
+      </div>
+      {% if me.UserRole == 'admin' %}
+      <a href="/schedules/manage?pkval=new" class="create-btn">Create Schedule</a>
+      {% endif %}
+    </div>
+
+    <div class="calendar">
+      <div class="calendar-header">
+        {% for day in ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] %}
+        <div class="weekday">{{ day }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="calendar-body">
+        {% for week in weeks %}
+          {% for day in week %}
+            <div class="calendar-day {% if day and day.strftime('%Y-%m-%d') == now.strftime('%Y-%m-%d') %}today{% endif %}">
+              {% if day %}
+                <div class="day-number">{{ day.day }}</div>
+
+                {% for s in objs.data %}
+                  {% if s.Start.strftime('%Y-%m-%d') == day.strftime('%Y-%m-%d') %}
+                    
+                    {% if me.UserRole == 'admin' %}
+                      <a href="/schedules/manage?pkval={{ s.SID }}" class="appointment">
+                    {% elif me.UserRole == 'doctor' %}
+                      <a href="/procedure_status/manage?pkval={{ s.SID }}" class="appointment">
+                    {% else %}
+                      <div class="appointment">
+                    {% endif %}
+
+                    <span class="time">{{ s.Start.strftime('%I:%M %p') }}</span>
+                    <span class="patient">{{ s.patient_name }}</span>
+
+                    {% if me.UserRole == 'admin' or me.UserRole == 'doctor' %}
+                      </a>
+                    {% else %}
+                      </div>
+                    {% endif %}
+
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </div>
+          {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+
+  </main>
+</div>
+
+{% endblock %}
