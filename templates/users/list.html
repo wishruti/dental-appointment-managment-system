@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='list.css') }}">
+
+<!-- <div class="dashboard-container">
+  <aside class="sidebar">
+    <h2>Hi, Admin</h2>
+    <nav>
+      <a href="/main">Home</a>
+      <a href="/users/manage" class="active">Users</a>
+      <a href="/procedures/manage">Procedures</a>
+      <a href="/schedules/list">Schedule</a>
+      <a href="/procedure_status/manage">Procedure Status</a>
+    </nav>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </aside> -->
+
+  <main class="dashboard-main">
+    <div class="header-row">
+      <h2 class="page-title">Users</h2>
+      <a href="/users/manage?pkval=new" class="create-btn">Create New User</a>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Edit</th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj in obj.data %}
+          <tr>
+            <td><a href="/users/manage?pkval={{ obj.UserID }}" class="edit-btn">Edit</a></td>
+            <td>{{ obj.Email }}</td>
+            <td>{{ obj.Full_name }}</td>
+            <td>{{ obj.Phone_No }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+{% endblock %}
